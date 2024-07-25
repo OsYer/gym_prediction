@@ -14,7 +14,7 @@ except Exception as e:
 
 @app.route('/')
 def home():
-    return render_template('formulario.html')
+    return render_template('formulario1.html')
 
 @app.route('/predict', methods=['POST'])
 def predict():
