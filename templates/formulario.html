@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predicción de Renovación de Membresía</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2 class="mt-5">Formulario de Predicción de Renovación de Membresía</h2>
+        <form id="prediction-form" class="mt-3">
+            <div class="form-group">
+                <label for="edad">Edad:</label>
+                <input type="number" class="form-control" id="edad" name="edad" required>
+            </div>
+            <div class="form-group">
+                <label for="genero">Género:</label>
+                <select class="form-control" id="genero" name="genero" required>
+                    <option value="M">Masculino</option>
+                    <option value="F">Femenino</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="total_asistencias">Total de Asistencias:</label>
+                <input type="number" class="form-control" id="total_asistencias" name="total_asistencias" required>
+            </div>
+            <div class="form-group">
+                <label for="ingresos_estimados">Ingresos Estimados:</label>
+                <input type="number" class="form-control" id="ingresos_estimados" name="ingresos_estimados" required>
+            </div>
+            <div class="form-group">
+                <label for="problema_salud_reciente">Problema de Salud Reciente (1=Sí, 0=No):</label>
+                <input type="number" class="form-control" id="problema_salud_reciente" name="problema_salud_reciente" required>
+            </div>
+            <div class="form-group">
+                <label for="distancia_gimnasio_metros">Distancia al Gimnasio (metros):</label>
+                <input type="number" class="form-control" id="distancia_gimnasio_metros" name="distancia_gimnasio_metros" required>
+            </div>
+            <div class="form-group">
+                <label for="num_renovaciones_anual">Número de Renovaciones Anual:</label>
+                <input type="number" class="form-control" id="num_renovaciones_anual" name="num_renovaciones_anual" required>
+            </div>
+            <div class="form-group">
+                <label for="estudia">Estudia (1=Sí, 0=No):</label>
+                <input type="number" class="form-control" id="estudia" name="estudia" required>
+            </div>
+            <div class="form-group">
+                <label for="trabaja">Trabaja (1=Sí, 0=No):</label>
+                <input type="number" class="form-control" id="trabaja" name="trabaja" required>
+            </div>
+            <div class="form-group">
+                <label for="renovo_anterior">Renovó Anteriormente (1=Sí, 0=No):</label>
+                <input type="number" class="form-control" id="renovo_anterior" name="renovo_anterior" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Predecir</button>
+        </form>
+        <div class="mt-3">
+            <p id="prediction-result"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('prediction-result').innerText = `Renovará su membresía: ${result.renueva ? 'Sí' : 'No'}`;
+                } else {
+                    document.getElementById('prediction-result').innerText = `Error: ${result.error}`;
+                }
+            } catch (error) {
+                document.getElementById('prediction-result').innerText = `Error: ${error.message}`;
+            }
+        });
+    </script>
+</body>
+</html>
